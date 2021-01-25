@@ -13,4 +13,4 @@ Numer albumu: 72558
 Grupa studencka: WEL18DE1S1
 
 # Odpowiedzi do pytań z instrukcji
-...
+Weryfikacja działania programu z zadania 3.2.1. - Program wyświetla po kolei Menu 1, Menu 2 i Menu 3.
