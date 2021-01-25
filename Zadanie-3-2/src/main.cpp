@@ -1,19 +1,25 @@
 #include <Arduino.h>
 #include <LiquidCrystal.h>
 
+#define buttonUp  11 // Przycisk następny - pin 11
+#define buttonDown  13 // Przycisk następny - pin 13
+
 //Inicjalizacja obiektu klasy LiquidCrystal: RS, E, DB4, DB5, DB6, DB7
 LiquidCrystal lcd(9, 8, 7, 6, 5, 4);
 int menu=1; //Numer aktualnie wyświetlanego ekranu
 void dispMenu(void);
+void changeMenu(void);
+
 void setup(void) {
   lcd.begin(16, 2); //Ustawienie liczby kolumn i wierszy
+  //Konfiguracja wyprowadzeń mikrokontrolera
+  pinMode(buttonUp, INPUT_PULLUP);
+  pinMode(buttonDown, INPUT_PULLUP);
 }
 
 void loop(void) {
   dispMenu(); //Wyświetlenie menu
-  delay(1000);
-  menu++; //Zmiana ekranu menu
-  if(menu>3) menu=1;
+  changeMenu(); //Zmiana menu
 }
 
 void dispMenu(void) {
@@ -30,5 +36,20 @@ void dispMenu(void) {
     lcd.setCursor(0, 0);
     lcd.print("Menu 3");
     break;
+  }
+}
+
+void changeMenu(void) {
+  if(digitalRead(buttonUp) == HIGH) { //Przycisk UP wciśnięty
+    menu=menu+1; //Następny ekran
+    if(menu>3) {
+      menu=1;
+    }
+  }
+  if(digitalRead(buttonDown) == HIGH) { //Przycisk DOWN wciśnięty
+    menu=menu-1; //Poprzedni ekran
+    if(menu<1) {
+      menu=3;
+    }
   }
 }
