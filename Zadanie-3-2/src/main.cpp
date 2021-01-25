@@ -9,6 +9,8 @@ LiquidCrystal lcd(9, 8, 7, 6, 5, 4);
 int menu=1; //Numer aktualnie wyświetlanego ekranu
 void dispMenu(void);
 void changeMenu(void);
+bool psButtonUp=LOW;
+bool psButtonDown=LOW;
 
 void setup(void) {
   lcd.begin(16, 2); //Ustawienie liczby kolumn i wierszy
@@ -40,16 +42,20 @@ void dispMenu(void) {
 }
 
 void changeMenu(void) {
-  if(digitalRead(buttonUp) == HIGH) { //Przycisk UP wciśnięty
+  if(digitalRead(buttonUp) == HIGH && psButtonUp == LOW) { //Przycisk UP wciśnięty
+    psButtonUp = HIGH;
     menu=menu+1; //Następny ekran
     if(menu>3) {
       menu=1;
     }
   }
-  if(digitalRead(buttonDown) == HIGH) { //Przycisk DOWN wciśnięty
+  if(digitalRead(buttonDown) == HIGH && psButtonDown == LOW) { //Przycisk DOWN wciśnięty
+    psButtonDown = HIGH;
     menu=menu-1; //Poprzedni ekran
     if(menu<1) {
       menu=3;
     }
   }
+  psButtonUp = digitalRead(buttonUp);
+  psButtonDown = digitalRead(buttonDown);
 }
