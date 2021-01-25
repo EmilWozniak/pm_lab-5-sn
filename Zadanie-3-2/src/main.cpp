@@ -9,6 +9,7 @@
 #define LedGreen 1
 #define LedBlue 2
 
+#define wentylator 10
 
 //Inicjalizacja obiektu klasy LiquidCrystal: RS, E, DB4, DB5, DB6, DB7
 LiquidCrystal lcd(9, 8, 7, 6, 5, 4);
@@ -21,6 +22,7 @@ void readTemperature(void);
 float temperature;
 void lcdClear(void);
 void changeRGBLed(void);
+void runFun(void);
 
 void setup(void) {
   lcd.begin(16, 2); //Ustawienie liczby kolumn i wierszy
@@ -31,6 +33,8 @@ void setup(void) {
   pinMode(LedRed, OUTPUT);
   pinMode(LedGreen, OUTPUT);
   pinMode(LedBlue, OUTPUT);
+  pinMode(wentylator, OUTPUT);
+  analogWrite(wentylator, 0);
 }
 
 void loop(void) {
@@ -38,6 +42,7 @@ void loop(void) {
   changeMenu(); //Zmiana menu
   readTemperature(); //Odczyt temperaury otoczenia
   changeRGBLed(); //Zmiana koloru diody RGB
+  runFun();
 }
 
 void dispMenu(void) {
@@ -101,4 +106,12 @@ void changeRGBLed(void) {
   analogWrite(LedRed, 0+change);
   analogWrite(LedGreen, 0);
   analogWrite(LedBlue, 255-change);
+}
+
+void runFun(void) {
+  if(temperature>40){
+    float duty = map(temperature, 40, 100, 100, 255);
+    analogWrite(wentylator, 255);
+  }
+  else analogWrite(wentylator, 0);
 }
