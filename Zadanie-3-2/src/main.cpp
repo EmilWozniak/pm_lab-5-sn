@@ -2,7 +2,13 @@
 #include <LiquidCrystal.h>
 
 #define buttonUp  11 // Przycisk następny - pin 11
+#define buttonOK  12
 #define buttonDown  13 // Przycisk następny - pin 13
+
+#define LedRed 3
+#define LedGreen 1
+#define LedBlue 2
+
 
 //Inicjalizacja obiektu klasy LiquidCrystal: RS, E, DB4, DB5, DB6, DB7
 LiquidCrystal lcd(9, 8, 7, 6, 5, 4);
@@ -14,18 +20,24 @@ bool psButtonDown=LOW;
 void readTemperature(void);
 float temperature;
 void lcdClear(void);
+void changeRGBLed(void);
 
 void setup(void) {
   lcd.begin(16, 2); //Ustawienie liczby kolumn i wierszy
   //Konfiguracja wyprowadzeń mikrokontrolera
   pinMode(buttonUp, INPUT_PULLUP);
+  pinMode(buttonOK, INPUT_PULLUP);
   pinMode(buttonDown, INPUT_PULLUP);
+  pinMode(LedRed, OUTPUT);
+  pinMode(LedGreen, OUTPUT);
+  pinMode(LedBlue, OUTPUT);
 }
 
 void loop(void) {
   dispMenu(); //Wyświetlenie menu
   changeMenu(); //Zmiana menu
   readTemperature(); //Odczyt temperaury otoczenia
+  changeRGBLed(); //Zmiana koloru diody RGB
 }
 
 void dispMenu(void) {
@@ -82,4 +94,11 @@ void lcdClear(void) {
   lcd.print("..........");
   lcd.setCursor(0, 1);
   lcd.print("..........");
+}
+
+void changeRGBLed(void) {
+  float change = (temperature+40.0f) * 255.0f / (125.0f+40.0f);
+  analogWrite(LedRed, 0+change);
+  analogWrite(LedGreen, 0);
+  analogWrite(LedBlue, 255-change);
 }
