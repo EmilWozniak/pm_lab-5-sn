@@ -11,6 +11,9 @@ void dispMenu(void);
 void changeMenu(void);
 bool psButtonUp=LOW;
 bool psButtonDown=LOW;
+void readTemperature(void);
+float temperature;
+void lcdClear(void);
 
 void setup(void) {
   lcd.begin(16, 2); //Ustawienie liczby kolumn i wierszy
@@ -22,13 +25,18 @@ void setup(void) {
 void loop(void) {
   dispMenu(); //Wyświetlenie menu
   changeMenu(); //Zmiana menu
+  readTemperature(); //Odczyt temperaury otoczenia
 }
 
 void dispMenu(void) {
   switch(menu) {
     case 1:
     lcd.setCursor(0, 0);
-    lcd.print("Menu 1");
+    lcd.print("Temperatura:");
+    lcd.setCursor(0, 1);
+    lcd.print(temperature);
+    lcd.setCursor(7, 1);
+    lcd.print("°C");
     break;
     case 2:
     lcd.setCursor(0, 0);
@@ -48,6 +56,7 @@ void changeMenu(void) {
     if(menu>3) {
       menu=1;
     }
+    lcdClear();
   }
   if(digitalRead(buttonDown) == HIGH && psButtonDown == LOW) { //Przycisk DOWN wciśnięty
     psButtonDown = HIGH;
@@ -55,7 +64,22 @@ void changeMenu(void) {
     if(menu<1) {
       menu=3;
     }
+    lcdClear();
   }
   psButtonUp = digitalRead(buttonUp);
   psButtonDown = digitalRead(buttonDown);
+}
+
+void readTemperature(void) {
+  unsigned int digital = analogRead(A5);
+  float resolution = (5.0f / 1024.0f);
+  float voltage = resolution * digital;
+  temperature = (voltage-0.1f) * (125.0f+40.0f) / (1.75f-0.1f) - 40.0f;
+}
+
+void lcdClear(void) {
+  lcd.setCursor(0, 0);
+  lcd.print("..........");
+  lcd.setCursor(0, 1);
+  lcd.print("..........");
 }
